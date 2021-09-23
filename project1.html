@@ -34,6 +34,35 @@
         <link rel="stylesheet" href="css/icomoon.css">
         <link rel="stylesheet" href="css/style.css">
         <link rel="shortcut icon" href="images/hmslogo.ico" type="image/png" />
+
+        <script type="text/javascript" language="javascript" src="jsme/jsme.nocache.js"></script>
+        <style>
+            em {
+                background-color: rgb(102, 255, 255);
+            }
+        </style>
+    
+        <script>
+            //this function will be called after the JavaScriptApplet code has been loaded.
+            function jsmeOnLoad() {
+    
+                jsmeApplet = new JSApplet.JSME("jsme_container", "380px", "340px", {
+                    "options": "oldlook,marker,markAtomOnly,nocanonize"
+                });
+    
+                jsmeApplet.setCallBack("AfterStructureModified", show_smiles);
+                //jsmeApplet.setNotifyStructuralChangeJSfunction("show_smiles");
+            }
+    
+            var patt = /\[([A-Za-z][a-z]?)H?\d*:\d+\]/g; //regexp pattern for numbered atom
+            function show_smiles(event) {
+                smiles = event.src.smiles(); //atom that are colored are numbered
+                new_smiles = smiles.replace(patt, '<em>$1</em>');
+                document.getElementById("smiles_container").innerHTML = new_smiles
+            }
+    
+    
+        </script>
     </head>
 
     <style>
@@ -225,6 +254,16 @@
                                     <b>Instructions :</b> Please type the name of the Solute and Solvent molecule to predict the
                                      Pharmacokinetic Properties of the Drug-Like Molecules.
                                 </p>
+
+                                <div id="jsme_container"></div>
+                                <form>
+                                <input type="checkbox" onChange='jsmeApplet.options(this.checked ? "canonize" : "nocanonize");show_smiles({src: jsmeApplet})' >Canonical SMILES
+                                </form>
+
+                                <BR>
+                                SMILES: <b><span id="smiles_container"></span></b>
+
+
 
                                 <div class="d-flex flex-column min-vh-100 justify-content-center align-items-center" >							
                                     <form action="#">
